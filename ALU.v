@@ -21,7 +21,7 @@
 `timescale 1 ns / 1ns
 
 module n_bit_ALU_generate(c,Cin,Ain,Bin,Cout,Fout,V,Z,carry_outs);
-	parameter n=4;
+	parameter n=32;
 	
 	input	[n-1:0]	Ain,Bin;
 	input	[2:0]	c;
