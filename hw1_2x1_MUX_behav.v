@@ -20,13 +20,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 module hw1_2x1_MUX_behav(s,i1,i0,o);
 
-  input s, i1, i0;
-  output o;
-  reg o;
+	input SEL;
+	input [1:0] IN;
+	output OUT;
+	wire MID1, MID2;
 
-  always @(*)
-  begin
-    o = s ? i1 : i0;
-  end
+	and a0 (MID1, ~SEL, IN[0]);
+	and a1 (MID2, SEL, IN[1]);
+	or o0 (OUT, MID1, MID2);
+
 
 endmodule

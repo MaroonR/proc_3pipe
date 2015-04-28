@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module HW6_load_store_reg_n_bit(clk, reg_in, clear, set, ld_st, reg_out);
-	parameter n = 4;
+	parameter n = 32;
 	
 	input 			clk, clear, set, ld_st;
 	input	[n-1:0]	reg_in;
