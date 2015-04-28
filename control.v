@@ -43,7 +43,7 @@
 	
 	DIRECT ADDRESING            !!!!!!!!!!!!!! We need to talk about this
 	===========================================
-	[    4    ] [    5    ] [    5    ] [    5   ] [   5    ] [   3  ]
+	[    4    ] [    5    ] [    5    ] [    5   ] [   9    ] [   4  ]
 	
 	
 		opcode		  rs			  rt			  rd		 sh-amt		 alu
@@ -63,24 +63,38 @@
 	 opcode                       target address
 	===========================================
 	
+				OP						FUNCT				
+//ADD   : 	0000					0000          	ADD Unsigned
+//ADDS  : 	0000					0001				ADD signed
+//SUB   : 	0000					0010				SUB Unsigned
+//SUBS  : 	0000					0011				...
+//OR    : 	0000					0100
+//ORS   : 	0000					0101
+//AND   : 	0000					0110
+//ANDS  : 	0000					0111
+//NOT   : 	0000					1000	
+//SLT/XOR   : 	0000					1001				Set to 1 if less than? Or do we want dependent on ALU status like ARM?
+//MULT  : 	0000					1010				MULT Signed
+//DIV   : 	0000					1011				DIV Signed
+//SLL   : 	0000					1100				Shift Left Logical
+//SRL   : 	0000					1101				Shift Right Logical
+//SRA   : 	0000					1111				Shift Right Arithmetic
 
-//STALL : 0000
-//ADD   : 0000
-//SUB   : 0000
-//OR    : 0000
-//AND   : 0000
-//NOT   : 0000
-//MULT  : 0000
-//DIV   : 0000
-//LDR	  : 1000
-//STR	  : 1001
-//MOV	  : 1010
-//BEQ   : 1011
-//BX LR : 1100
-//IN    : 1101
-//OUT   : 1110
-//LMR   : 1111
 
+//J	  : 	0001					0000				Jump
+//JL    : 	0010					0000				Jump and Link
+//JR	  : 	0011					0000				Jump and return? what?
+//SLTI  : 	0100										Set to 1 if less than 1 immed.
+//BNE   : 	0101										Branch on Not Equals
+//BGT   :   0110										Branch on Greather Than
+//BLT   :	0111										Branch on Less Than
+//LDR   : 	1000
+//STR   : 	1001
+//LMR   : 	1010
+//NOP   :	1011
+				1100
+				1101
+				1111
 
 
 module controller(intr, start, clr, clk, yp, Y, ctrl, alu_ctrl
