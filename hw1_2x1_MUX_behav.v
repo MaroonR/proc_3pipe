@@ -18,11 +18,11 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-module hw1_2x1_MUX_behav(s,i1,i0,o);
+module hw1_2x1_MUX_behav(	input SEL,
+	input [1:0] IN,
+	output OUT);
 
-	input SEL;
-	input [1:0] IN;
-	output OUT;
+
 	wire MID1, MID2;
 
 	and a0 (MID1, ~SEL, IN[0]);

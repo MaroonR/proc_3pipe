@@ -1,10 +1,10 @@
 `timescale 1ns / 1ps
-module PosNegDFlipFlop(Clock,D,Set,Clear,Q);
-	input Clock;				//clock input
+module PosNegDFlipFlop(clock,D,Set,Clear,Q);
+	input clock;				//clock input
 	input D, Set, Clear;		//three inputs
 	output reg Q;				//output from flip flop		
 	
-	always @ (Clock)
+	always @ (negedge(clock) or posedge(clock))
 		begin
 			if (Clear == 1'b0) 
 				Q = 1'b0;

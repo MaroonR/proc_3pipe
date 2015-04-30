@@ -66,11 +66,12 @@ module Cache(MDRI, MDRO, MARI, read, write, ready, clk, Address_to_RAM, Data_to_
 					j = i;							//then j becomes that block's index
 			if (j!=-1)				//a block was found containing that address
 			begin: update_block
-				for (i = 0; i < 4; i = i + 1) 		//decrementing LRU counters
+				for (i = 0; i < 4; i = i + 1) begin	//decrementing LRU counters
 					if (bank[i][1:0]>bank[j][1:0])	//
-					bank[i][1:0] = bank[i][1:0] - 1'b1;
-				if (bank[i][m+n+1:m+2]==MARI)		//MAR is equal to an address in the block
-					j = i;
+						bank[i][1:0] = bank[i][1:0] - 1'b1;
+					if (bank[i][m+n+1:m+2]==MARI)		//MAR is equal to an address in the block
+						j = i;
+				end
 				bank[j] = {MARI, MDRI, 2'b11};
 			end
 			else				//this block is not in the cache

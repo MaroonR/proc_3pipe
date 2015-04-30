@@ -32,6 +32,7 @@ module n_bit_ALU_generate(c,Cin,Ain,Bin,Cout,Fout,V,Z,carry_outs);
 	
 	wire	[n:0]	carry;
 	wire	[n-1:0]	w;
+
 	
 	genvar i;
 	
@@ -53,4 +54,28 @@ module n_bit_ALU_generate(c,Cin,Ain,Bin,Cout,Fout,V,Z,carry_outs);
 	assign V=(carry[n] ^ carry[n-1]);
 	assign Z=~(|Fout);
 	
+endmodule
+
+module nbit_mult_div(c,f,f_s);
+	parameter n = 4;
+	input [2:0]c;
+	input signed [(n-1):0]f;
+	output signed [(n-1):0]f_s;
+	reg signed [(n-1):0]f_s;
+	
+	always @ (c,f)
+	begin
+		case (c)
+			0 : f_s = f >>> 3;
+			1 : f_s = f >>> 2;
+			2 : f_s = f >>> 1;
+			3 : f_s = f;
+			4 : f_s = f <<< 1;
+			5 : f_s = f <<< 2;
+			6 : f_s = f <<< 3;
+			7 : f_s = 0;
+			default : f_s = 0;
+		endcase
+	end
+
 endmodule

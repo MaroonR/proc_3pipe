@@ -17,12 +17,12 @@ module MemDataReg_32Bit(cpu_in, cache_in, ld_str_out, ld_str, clr, clk);
 		end
 	endgenerate
 	
-	always @ (ld_str)
+	always @ (clk) begin
 		if (ld_str == 1)
 			bit_slice_input = cpu_in;
 		else
 			bit_slice_input = cache_in;
-	
+	end
 	
 
 endmodule

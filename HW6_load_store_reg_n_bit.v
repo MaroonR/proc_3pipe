@@ -50,4 +50,6 @@ module HW6_load_store_reg_n_bit(clk, reg_in, clear, set, ld_st, reg_out);
 		);		
 	end
 	endgenerate
+	
+
 endmodule

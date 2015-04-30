@@ -1,0 +1,4 @@
+verilog work "HW5_DFF_syn_high_clear_set.v"
+verilog work "hw1_2x1_MUX_behav.v"
+verilog work "RegBitSlice.v"
+verilog work "LdStrRegParam.v"

@@ -27,10 +27,9 @@ module HW6_load_store_reg_bit_slice(clk, slice_in, clear, set, ld_st, slice_out)
 	//w[1] - connection from q to mux_i0/slice_out
 	
 	hw1_2x1_MUX_behav MUX(
-		.s	(ld_st),
-		.i1	(slice_in),
-		.i0	(w[1]),
-		.o	(w[0])
+		.SEL	(ld_st),
+		.IN	({slice_in,w[1]}),
+		.OUT(w[0])
 	);
 	
 	HW5_DFF_syn_high_clear_set DFF(

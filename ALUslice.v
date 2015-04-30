@@ -52,8 +52,8 @@ module ALUslice(c, ai, bi, ci, co, f);
 	//w[7] = BFA sum
 	
 	hw1_BFA_gate 		BFA(ai, w[2], ci, w[7], co);
-	hw1_2x1_MUX_behav	M1(c[0], w[0], bi, w[2]);
-	hw1_2x1_MUX_behav	M2(c[0], w[0], w[1], w[3]);
+	hw1_2x1_MUX_behav	M1(c[0], {w[0], bi}, w[2]);
+	hw1_2x1_MUX_behav	M2(c[0], {w[0], w[1]}, w[3]);
 	hw1_4x1_MUX_RTL	M3({w[4], w[5], w[3], w[7]}, c[2:1], f);
 	
 	and (w[4], ai, w[2]);
