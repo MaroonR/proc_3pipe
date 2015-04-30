@@ -4,4 +4,8 @@
 <!--advised that users do not directly edit the contents of this file.                               -->
 <!--                                                                                                 -->
 <filters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation='filter.xsd'>
+<filter task="xst" file="Xst" num="1290" type="warning"></filter>
+<filter task="xst" file="Xst" num="1293" type="warning"></filter>
+<filter task="xst" file="Xst" num="1895" type="warning"></filter>
+<filter task="xst" file="Xst" num="1896" type="warning"></filter>
 </filters>

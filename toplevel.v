@@ -2,9 +2,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 /*Big To-Do:
 	
-	1.) Finish instantiating modules
-	2.) Create pipelines
-	3.) 
+	Parts that aren't connecting:
+	
+	Program Counter
+	R1-R7
+	ALU
+	
 
 
 */
@@ -31,9 +34,9 @@ module toplevel(clk, input_bus, output_bus, valid_input, valid_output, reset, Y1
 	
 
 	//wire busses
-
+	
 	wire [0:235] r; //235 ram communication line
-	wire [0:16] s; //17 select linse
+	wire [0:23] s;  //24 select linse
 	wire [0:191] u; //192 wires for registry output
 	wire [0:188] w; //157 wires: STAGE 1 Communication
 	wire [0:400] x; //337 wires: STAGE 2 Communication  (needs to be broken up for stage 3)
@@ -41,7 +44,7 @@ module toplevel(clk, input_bus, output_bus, valid_input, valid_output, reset, Y1
 						w[0],w[1],w[112:115],w[4],w[110],w[2],
 						s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7],s[8],s[9],s[10],s[11],s[12],s[13],s[14],s[15],s[16],
 						x[294],x[293],x[296],x[297],x[298],x[299],x[300],x[301],x[302],x[303],ODV,x[292],w[5],
-						w[54],w[55],w[56],w[57],w[3],w[116],LPSR2,ISEL,LSEL, Y1out, Y2out, Y3out);
+						w[54],w[55],w[56],w[57],w[3],w[116],s[18],s[19],s[20], s[21], s[22], s[23]);
 	//STAGE 1 MODULES: INSTRUCTION FETCH
 	//========================================================================================
 	//MHVPIS
@@ -55,14 +58,14 @@ module toplevel(clk, input_bus, output_bus, valid_input, valid_output, reset, Y1
 	//mux3: input to R6 load line
 	Mux2to1_8Bit MUX3 (s[2], {w[46:53],w[6:13]}, w[58:65]);
 
-	LdStrRegParam #( 8 ) R6 (w[149:156], w[30:37], w[54], rst, 0, clk); 
-	LdStrRegParam #( 8 ) R7 (w[46:53], w[22:29], w[55], rst, 0, clk); 
+	LdStrRegParam_8 R6 (w[149:156], w[30:37], w[54], rst, 0, clk); 
+	LdStrRegParam_8 R7 (w[46:53], w[22:29], w[55], rst, 0, clk); 
 	//PC
 	PrgmCntr PC (clk, 1'b0, w[38:45], w[46:53], w[56], w[57]);
 	//MAR1
-	LdStrRegParam #( 8 ) MAR1 (w[58:65], w[66:73], w[3], rst, 0, clk); 
+	LdStrRegParam_8 MAR1 (w[58:65], w[66:73], w[3], rst, 0, clk); 
 	//IR
-	PosNegLdStrReg # ( 32 ) IR1 (w[74:105],w[117:148], w[2], rst, 0, clk);
+	PosNegLdStrReg IR1 (w[74:105],w[117:148], w[2], rst, 0, clk);
 	//instruction cache
 	Cache Instr_Cache (w[66:73], w[74:105], 8'b0000000, w[110], 1'b0, w[111], clk, r[0:7], r[8:39], r[86:118], r[41], r[40],  r[42]);
 	//instruction delay
@@ -75,7 +78,7 @@ module toplevel(clk, input_bus, output_bus, valid_input, valid_output, reset, Y1
 	HW6_load_store_reg_n_bit PIPELINE_STAGE_1(clk, w[117:148],  ,  , w[116], x[0:15]);
 	//HW6_load_store_reg_n_bit PIPELINE_STAGE_1(clk, w[117:148],  ,  , w[116], PSR_out);
 //	//========================================================================================
-//	//STAGE 2 MODULES: INSTRUCTION DECODE
+//	//STAGE 2 MODULES: Execution
 //	//========================================================================================
 		//mux4: MDR2 Input
 	Mux4to1_8Bit # ( 32 ) MUX4 (s[3:4], {x[192:223], x[128:159], input_bus, 0}, x[305:336]);
@@ -85,21 +88,37 @@ module toplevel(clk, input_bus, output_bus, valid_input, valid_output, reset, Y1
 	Mux8to1_32Bit MUX6 (s[7:9], {u[0:191],0}, x[128:159]);
 	
 	//mux7: ALU line B to select indirect/immediate
-	Mux8to1_32Bit MUX7 ({0,0, ISEL}, {x[64:95], w[134:148], 0}, x[337:368]);
+	//Mux8to1_32Bit MUX7 ({0,0, ISEL}, {x[64:95], w[134:148], 0}, x[337:368]);
+	
+	//potential mux that selects between 16 and 32 bit values that I'm going to try:
+	//module mux_2x1_16SE_32( sel, i0_16, i1_32, out );
+	mux_2x1_16SE_32 MUX7 (s[19], w[134:148], x[64:95], x[337:368]);
 	
 	//mux8: load vs ALU on PSR2 line
-	Mux8to1_32Bit MUX8 ({0,0, LSEL}, {x[64:95], x[192:223], 0}, x[369:400]);
+	//Mux8to1_32Bit MUX8 ({0,0, LSEL}, {x[64:95], x[192:223], 0}, x[369:400]);
+	
+	//another potential mux I made. It's just a regular, old fashioned 32 bit mux :D
+	//	module mux_2x1_32Bit(SEL, IN, OUT); 
+	//    input SEL;
+	//	 input [63:0] IN;
+	//	 output [31:0]OUT;
+	//	 
+	//	 assign OUT = (~SEL&IN[63:32])|(SEL&IN[31:0]);
+
+	mux_2x1_32Bit MUX8 (s[20], {x[64:95], x[192:223]}, x[369:400]);
+	 
+	//are we sure this is right?? the same input is going to both of these muxs
 	
 	//R0 thru R5
-	LdStrRegParam #( 32 ) R0 (x[192:223], u[0:31], x[298], rst, 0, clk); 
-	LdStrRegParam #( 32 ) R1 (x[192:223], u[32:63], x[299], rst, 0, clk); 
-	LdStrRegParam #( 32 ) R2 (x[192:223], u[64:95], x[300], rst, 0, clk); 
-	LdStrRegParam #( 32 ) R3 (x[192:223], u[96:127], x[301], rst, 0, clk); 
-	LdStrRegParam #( 32 ) R4 (x[192:223], u[128:159], x[302], rst, 0, clk); 
-	LdStrRegParam #( 32 ) R5 (x[192:223], u[160:191], x[303], rst, 0, clk); 
+	LdStrRegParam R0 (x[192:223], u[0:31], x[298], rst, 0, clk); 
+	LdStrRegParam R1 (x[192:223], u[32:63], x[299], rst, 0, clk); 
+	LdStrRegParam R2 (x[192:223], u[64:95], x[300], rst, 0, clk); 
+	LdStrRegParam R3 (x[192:223], u[96:127], x[301], rst, 0, clk); 
+	LdStrRegParam R4 (x[192:223], u[128:159], x[302], rst, 0, clk); 
+	LdStrRegParam R5 (x[192:223], u[160:191], x[303], rst, 0, clk); 
 	
 	//Memory Address Register 2
-	LdStrRegParam #( 8 ) MAR2 (x[16:23], x[24:31], x[297], rst, 0, clk);
+	LdStrRegParam_8 MAR2 (x[16:23], x[24:31], x[297], rst, 0, clk);
 	
 	//combinational logic to prevent LMDR from overriding cache data on negedge loads
 	and (x[304], ~x[295], x[296]);
@@ -117,23 +136,20 @@ module toplevel(clk, input_bus, output_bus, valid_input, valid_output, reset, Y1
 	RAM Data_RAM (r[168:199], r[203:234], clk, r[202], r[201], r[200], r[160:167]);
 	
 	//ALU  c,Cin,Ain,Bin,Cout,Fout,V,Z,carry_outs
-	n_bit_ALU_generate ALU({s10,s11,s12},1'b0,x[128:159],x[64:95],x[160:191],x[290],x[288],x[256:287]);
+	
+	n_bit_ALU_generate ALU({s[10],s[11],s[12]},1'b0,x[128:159],x[64:95],x[160:191],x[290],x[288],x[256:287]);
 	//n_bit_ALU_generate ALU({s10,s11,s12},1'b0,x[128:159],x[64:95],x[160:191],x[290],x[288],ALU_out);
 	
-//
-//	//Shifter c,f,f_s
-	nbit_mult_div SHIFTER({s13,s14,s15},x[256:287],x[192:223]);
-//	
-//	always @ (posedge(clk)) begin
-//		
-//		test_out <= x[192:223];
-//		
-//	end;
-//	
-//	//	//STAGE 3 MODULES
-HW6_load_store_reg_n_bit PIPELINE_STAGE_2(clk, x[369:400], 0,0 , w[116], ALU_out);
+	//Shifter c,f,f_s
+	nbit_mult_div SHIFTER({s[13],s[14],s[15]},x[256:287],x[192:223]);
+
+	//	//	//STAGE 3 MODULES
+	HW6_load_store_reg_n_bit PIPELINE_STAGE_2(clk, x[369:400], 0,0 , s[18], ALU_out);
 
 //
 
 assign output_bus = x[64:95];
+assign Y1out = s[21];
+assign Y2out = s[22];
+assign Y3out = s[23];
 endmodule

@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module PrgmCntr(clk, clear, pc_input, pc_output, IPC, LPC);
-       parameter n = 4;                        //bit count of the counter
+       parameter n = 8;                        //bit count of the counter
 
        input clk, clear;
        input [n-1:0] pc_input;

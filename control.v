@@ -139,7 +139,7 @@ module control(clk,reset,IDV,V,S,Z,I_Cache_Ready,D_Cache_Ready,IR,
 		endcase
 	end
 	
-	always @ (y2 or IR)
+	always @ (y2 or IR or D_Cache_Ready)
 	begin
 		case (y2)
 		t2_0	:	begin s3=0; s4=0; s5=0; s6=0; s7=0; s8=0; s9=0; s10=0; s11=0; s12=0; s13=0; s14=1; s15=1; LPSR2=0; ISEL=0; LSEL=0;
